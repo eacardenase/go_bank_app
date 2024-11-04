@@ -41,6 +41,8 @@ func main() {
 		fmt.Print("ERROR: ")
 		fmt.Print(err, "\n")
 		fmt.Print("---------\n\n")
+
+		panic("Can't continue, sorry.")
 	}
 
 	fmt.Print("Welcome to the Golang Bank\n\n")
