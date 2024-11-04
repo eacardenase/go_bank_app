@@ -26,6 +26,12 @@ func main() {
 		fmt.Print("Your deposit: ")
 		fmt.Scan(&depositAmount)
 
+		if depositAmount <= 0 {
+			fmt.Println("Invalid amount. Must be greater than 0.")
+
+			return
+		}
+
 		accountBalance += depositAmount
 
 		fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
@@ -34,6 +40,18 @@ func main() {
 
 		fmt.Print("Withdrawal amount: ")
 		fmt.Scan(&withdrawalAmount)
+
+		if withdrawalAmount <= 0 {
+			fmt.Println("Invalid amount. Must be greater than 0.")
+
+			return
+		}
+
+		if withdrawalAmount > accountBalance {
+			fmt.Println("Invalid amount. You can't withdraw more than you have.")
+
+			return
+		}
 
 		accountBalance -= withdrawalAmount
 
