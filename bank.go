@@ -3,6 +3,8 @@ package main
 import "fmt"
 
 func main() {
+	accountBalance := 100.0
+
 	fmt.Print("Welcome to the Bank Application\n\n")
 
 	fmt.Println("What do you want to do?")
@@ -13,8 +15,12 @@ func main() {
 
 	var choice int
 
-	fmt.Print("Your choice: ")
+	fmt.Print("Select your choice: ")
 	fmt.Scan(&choice)
+
+	if choice == 1 {
+		fmt.Printf("Your balance is $%.2f\n", accountBalance)
+	}
 
 	fmt.Println("Your choice:", choice)
 }
