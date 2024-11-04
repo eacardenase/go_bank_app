@@ -7,6 +7,7 @@ func main() {
 
 	fmt.Print("Welcome to the Golang Bank\n\n")
 
+loop:
 	for {
 
 		fmt.Println("What do you want to do?")
@@ -20,9 +21,10 @@ func main() {
 		fmt.Print("Select your choice: ")
 		fmt.Scan(&choice)
 
-		if choice == 1 {
+		switch choice {
+		case 1:
 			fmt.Printf("Your balance is $%.2f\n", accountBalance)
-		} else if choice == 2 {
+		case 2:
 			var depositAmount float64
 
 			fmt.Print("Your deposit: ")
@@ -37,7 +39,7 @@ func main() {
 			accountBalance += depositAmount
 
 			fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
-		} else if choice == 3 {
+		case 3:
 			var withdrawalAmount float64
 
 			fmt.Print("Withdrawal amount: ")
@@ -58,10 +60,10 @@ func main() {
 			accountBalance -= withdrawalAmount
 
 			fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
-		} else {
+		default:
 			fmt.Println("Goodbye!")
 
-			break
+			break loop
 		}
 
 		fmt.Println("Your choice:", choice)
