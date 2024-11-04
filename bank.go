@@ -9,7 +9,23 @@ import (
 
 const accountBalanceFile = "balance.txt"
 
-func getBalanceFromFile() (float64, error) {
+func displayUserOptions() {
+	fmt.Println("\nWhat do you want to do?")
+	fmt.Println("1. Check the balance")
+	fmt.Println("2. Deposit money")
+	fmt.Println("3. Withdraw money")
+	fmt.Print("4. Exit\n\n")
+}
+
+func getUserInput() int {
+	var choice int
+	fmt.Print("Select your choice: ")
+	fmt.Scan(&choice)
+
+	return choice
+}
+
+func readBalanceFromFile() (float64, error) {
 	defaultBalance := 0.0
 	data, err := os.ReadFile(accountBalanceFile)
 
@@ -33,85 +49,103 @@ func writeBalanceToFile(balance float64) {
 	os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
 }
 
-func main() {
-	accountBalance, err := getBalanceFromFile()
+func getAccountBalance() float64 {
+	accountBalance, err := readBalanceFromFile()
 
 	if err != nil {
 		fmt.Print("---------\n")
 		fmt.Print("ERROR: ")
-		fmt.Print(err, "\n")
+		fmt.Print(err, ". Setting the account balance to $0.0.\n")
 		fmt.Print("---------\n\n")
 
-		panic("Can't continue, sorry.")
+		writeBalanceToFile(accountBalance)
 	}
 
-	fmt.Print("Welcome to the Golang Bank\n\n")
+	return accountBalance
+}
 
-loop:
+func updateBalance(amount float64) {
+	fmt.Printf("Balance updated! New balance: $%.2f\n", amount)
+
+	writeBalanceToFile(amount)
+}
+
+func checkBalance() {
+	accountBalance := getAccountBalance()
+
+	fmt.Printf("Your balance is $%.2f\n", accountBalance)
+}
+
+func depositMoney() error {
+	accountBalance := getAccountBalance()
+	var depositAmount float64
+
+	fmt.Print("Your deposit: ")
+	fmt.Scan(&depositAmount)
+
+	if depositAmount <= 0 {
+		return errors.New("invalid amount. Must be greater than 0")
+	}
+
+	accountBalance += depositAmount
+	updateBalance(accountBalance)
+
+	return nil
+}
+
+func withdrawMoney() error {
+	accountBalance := getAccountBalance()
+	var withdrawalAmount float64
+
+	fmt.Print("Withdrawal amount: ")
+	fmt.Scan(&withdrawalAmount)
+
+	if withdrawalAmount <= 0 {
+		return errors.New("invalid amount. Must be greater than 0")
+	}
+
+	if withdrawalAmount > accountBalance {
+		return errors.New("invalid amount. You can't withdraw more than you have")
+	}
+
+	accountBalance -= withdrawalAmount
+	updateBalance(accountBalance)
+
+	return nil
+}
+
+func closeBank() {
+	fmt.Print("\nThanks for using the Golang Bank\n")
+	fmt.Println("Goodbye!")
+}
+
+func main() {
+	fmt.Print("Welcome to the Golang Bank\n")
+
 	for {
+		displayUserOptions()
 
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check the balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
-
-		var choice int
-
-		fmt.Print("Select your choice: ")
-		fmt.Scan(&choice)
+		choice := getUserInput()
 
 		switch choice {
 		case 1:
-			fmt.Printf("Your balance is $%.2f\n", accountBalance)
+			checkBalance()
 		case 2:
-			var depositAmount float64
+			err := depositMoney()
 
-			fmt.Print("Your deposit: ")
-			fmt.Scan(&depositAmount)
-
-			if depositAmount <= 0 {
-				fmt.Println("Invalid amount. Must be greater than 0.")
-
-				continue
+			if err != nil {
+				fmt.Println(err)
 			}
-
-			accountBalance += depositAmount
-
-			fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
-
-			writeBalanceToFile(accountBalance)
 		case 3:
-			var withdrawalAmount float64
+			err := withdrawMoney()
 
-			fmt.Print("Withdrawal amount: ")
-			fmt.Scan(&withdrawalAmount)
-
-			if withdrawalAmount <= 0 {
-				fmt.Println("Invalid amount. Must be greater than 0.")
-
-				continue
+			if err != nil {
+				fmt.Println(err)
 			}
-
-			if withdrawalAmount > accountBalance {
-				fmt.Println("Invalid amount. You can't withdraw more than you have.")
-
-				continue
-			}
-
-			accountBalance -= withdrawalAmount
-
-			fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
-
-			writeBalanceToFile(accountBalance)
 		default:
-			fmt.Println("Goodbye!")
+			closeBank()
 
-			break loop
+			return
 		}
-
-		fmt.Println("Your choice:", choice)
 	}
-
-	fmt.Println("Thanks for using the Golang Bank!")
 }
