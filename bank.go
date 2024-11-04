@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	accountBalance := 100.0
+	accountBalance := 1000.0
 
 	fmt.Print("Welcome to the Bank Application\n\n")
 
@@ -29,6 +29,17 @@ func main() {
 		accountBalance += depositAmount
 
 		fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
+	} else if choice == 3 {
+		var withdrawalAmount float64
+
+		fmt.Print("Withdrawal amount: ")
+		fmt.Scan(&withdrawalAmount)
+
+		accountBalance -= withdrawalAmount
+
+		fmt.Printf("Balance updated! New amount: $%.2f\n", accountBalance)
+	} else {
+		fmt.Println("Goodbye!")
 	}
 
 	fmt.Println("Your choice:", choice)
