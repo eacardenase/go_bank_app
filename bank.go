@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -8,12 +9,22 @@ import (
 
 const accountBalanceFile = "balance.txt"
 
-func getBalanceFromFile() float64 {
-	data, _ := os.ReadFile(accountBalanceFile)
-	balanceText := string(data)
-	balance, _ := strconv.ParseFloat(balanceText, 64)
+func getBalanceFromFile() (float64, error) {
+	defaultBalance := 0.0
+	data, err := os.ReadFile(accountBalanceFile)
 
-	return balance
+	if err != nil {
+		return defaultBalance, errors.New("failed to find balance file")
+	}
+
+	balanceText := string(data)
+	balance, err := strconv.ParseFloat(balanceText, 64)
+
+	if err != nil {
+		return defaultBalance, errors.New("failed to parse stored balance")
+	}
+
+	return balance, nil
 }
 
 func writeBalanceToFile(balance float64) {
@@ -23,7 +34,14 @@ func writeBalanceToFile(balance float64) {
 }
 
 func main() {
-	accountBalance := getBalanceFromFile()
+	accountBalance, err := getBalanceFromFile()
+
+	if err != nil {
+		fmt.Print("---------\n")
+		fmt.Print("ERROR: ")
+		fmt.Print(err, "\n")
+		fmt.Print("---------\n\n")
+	}
 
 	fmt.Print("Welcome to the Golang Bank\n\n")
 
