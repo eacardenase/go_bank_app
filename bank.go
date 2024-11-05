@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/Pallinder/go-randomdata"
 )
 
 func main() {
 	fmt.Print("Welcome to the Golang Bank\n")
+	fmt.Println("Reach us 24/7 at", randomdata.PhoneNumber())
 
 	for {
 		displayUserOptions()
