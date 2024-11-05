@@ -9,3 +9,11 @@ func displayUserOptions() {
 	fmt.Println("3. Withdraw money")
 	fmt.Print("4. Exit\n\n")
 }
+
+func getUserInput() int {
+	var choice int
+	fmt.Print("Select your choice: ")
+	fmt.Scan(&choice)
+
+	return choice
+}
