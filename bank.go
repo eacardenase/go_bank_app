@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/eacardenase/go_bank_app/fileops"
 )
 
 const accountBalanceFile = "balance.txt"
@@ -17,32 +17,8 @@ func getUserInput() int {
 	return choice
 }
 
-func readBalanceFromFile() (float64, error) {
-	defaultBalance := 0.0
-	data, err := os.ReadFile(accountBalanceFile)
-
-	if err != nil {
-		return defaultBalance, errors.New("failed to find balance file")
-	}
-
-	balanceText := string(data)
-	balance, err := strconv.ParseFloat(balanceText, 64)
-
-	if err != nil {
-		return defaultBalance, errors.New("failed to parse stored balance")
-	}
-
-	return balance, nil
-}
-
-func writeBalanceToFile(balance float64) {
-	balanceText := fmt.Sprint(balance)
-
-	os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-}
-
 func getAccountBalance() float64 {
-	accountBalance, err := readBalanceFromFile()
+	accountBalance, err := fileops.ReadFloatFromFile(accountBalanceFile, 0.0)
 
 	if err != nil {
 		fmt.Print("---------\n")
@@ -50,7 +26,7 @@ func getAccountBalance() float64 {
 		fmt.Print(err, ". Setting the account balance to $0.0.\n")
 		fmt.Print("---------\n\n")
 
-		writeBalanceToFile(accountBalance)
+		updateBalance(accountBalance)
 	}
 
 	return accountBalance
@@ -59,7 +35,7 @@ func getAccountBalance() float64 {
 func updateBalance(amount float64) {
 	fmt.Printf("Balance updated! New balance: $%.2f\n", amount)
 
-	writeBalanceToFile(amount)
+	fileops.WriteFloatToFile(accountBalanceFile, amount)
 }
 
 func checkBalance() {
